@@ -80,3 +80,47 @@ doxygen/
 *.gcda
 *.gcov
 coverage/
+
+# Python (for HMI/tools)
+__pycache__/
+*.py[cod]
+*$py.class
+.Python
+*.egg-info/
+.eggs/
+venv/
+.venv/
+env/
+
+# Node.js (for HMI web)
+node_modules/
+npm-debug.log
+yarn-error.log
+.npm/
+dist/
+
+# Rust (if used)
+target/
+Cargo.lock
+
+# QEMU
+*.qcow2
+*.img
+
+# Simulation
+*.vcd
+*.fst
+
+# Secrets and credentials (never commit these)
+*.pem
+*.key
+*.crt
+secrets/
+.env
+.env.local
+.env.*.local
+
+# OS generated
+Thumbs.db
+ehthumbs.db
+Desktop.ini
