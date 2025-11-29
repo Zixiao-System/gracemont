@@ -1,0 +1,82 @@
+# CODEOWNERS file for Gracemont Industrial Control Framework
+# Each line is a file pattern followed by one or more owners.
+# Order matters: later patterns override earlier ones.
+# Documentation: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+*                                   @Amiya167
+
+# =============================================================================
+# RTOS CORE (Amiya167 - embedded systems, low-level C)
+# =============================================================================
+
+# ARM64 RTOS
+/ARM64-RTOS/                        @Amiya167
+/ARM64-RTOS/arch/                   @Amiya167
+/ARM64-RTOS/kernel/                 @Amiya167
+/ARM64-RTOS/drivers/                @Amiya167
+/ARM64-RTOS/net/                    @Amiya167
+/ARM64-RTOS/protocols/              @Amiya167
+/ARM64-RTOS/include/                @Amiya167
+/ARM64-RTOS/config/                 @Amiya167
+/ARM64-RTOS/tests/                  @Amiya167
+
+# X86_64 RTOS
+/X86_64-RTOS/                       @Amiya167
+
+# =============================================================================
+# SOFT PLC (Amiya167 - industrial control logic)
+# =============================================================================
+
+/SoftPLC/                           @Amiya167
+
+# =============================================================================
+# DCS - Distributed Control System (Amiya167 - control systems)
+# =============================================================================
+
+/DCS/                               @Amiya167
+
+# =============================================================================
+# HMI / SCADA (HwlloChen - Vue.js, Python, Go, Web development)
+# =============================================================================
+
+# HMI Server (Python/Go backend)
+/HMI/server/                        @HwlloChen @Amiya167
+
+# HMI Web Frontend (Vue.js, JavaScript, HTML, CSS)
+/HMI/web/                           @HwlloChen
+/HMI/widgets/                       @HwlloChen
+
+# Data Historian
+/HMI/historian/                     @HwlloChen @Amiya167
+
+# =============================================================================
+# DEVELOPMENT TOOLS
+# =============================================================================
+
+# Simulator (HwlloChen - Python/Go tools)
+/devtools/simulator/                @HwlloChen @Amiya167
+
+# Debugger (Amiya167 - low-level debugging)
+/devtools/debugger/                 @Amiya167
+
+# Flasher (Amiya167 - firmware tools)
+/devtools/flasher/                  @Amiya167
+
+# =============================================================================
+# DOCUMENTATION & EXAMPLES (Shared)
+# =============================================================================
+
+/docs/                              @Amiya167 @HwlloChen
+/examples/                          @Amiya167 @HwlloChen
+README.md                           @Amiya167 @HwlloChen
+CONTRIBUTING.md                     @Amiya167 @HwlloChen
+MAINTAINERS                         @Amiya167
+
+# =============================================================================
+# BUILD & CI/CD
+# =============================================================================
+
+/ARM64-RTOS/Makefile                @Amiya167
+/.github/                           @Amiya167 @HwlloChen
+.gitignore                          @Amiya167

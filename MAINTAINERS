@@ -1,0 +1,148 @@
+List of maintainers and how to submit changes
+=============================================
+
+Please try to follow the guidelines below. This will make things
+easier on the maintainers. Not all of these guidelines matter for every
+trivial patch so apply some common sense.
+
+1.	Always test your changes, however small, on at least one target
+	platform (QEMU is acceptable for initial testing).
+
+2.	Make sure your changes compile correctly. Building with different
+	configurations or for different architectures is helpful.
+
+3.	When you are happy with a change, submit it to the maintainers
+	for the affected areas.
+
+4.	Make a patch available to the relevant maintainer in the list.
+	Use 'git format-patch' and 'git send-email' if possible.
+
+5.	Include CHANGELOG entries if appropriate.
+
+6.	All contributions must be made under the GPLv3 license.
+
+Descriptions of section entries:
+
+	M: Mail: patch submission address (maintainer)
+	R: Reviewer: handles review and feedback
+	L: Mailing list for patches and discussions
+	S: Status:
+	   Supported:	Someone is paid to look after this
+	   Maintained:	Someone looks after it
+	   Odd Fixes:	Occasionally fixed
+	   Orphan:	No current maintainer
+	   Obsolete:	Old code, to be removed
+	F: Files and directories with wildcard patterns
+	X: Excluded files and directories
+
+		-----------------------------------
+
+OVERALL PROJECT
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+M:	HwlloChen <hwllochen@qq.com>
+S:	Maintained
+F:	*
+F:	*/
+
+ARM64 RTOS
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	ARM64-RTOS/
+F:	ARM64-RTOS/arch/
+F:	ARM64-RTOS/kernel/
+F:	ARM64-RTOS/drivers/
+F:	ARM64-RTOS/net/
+F:	ARM64-RTOS/protocols/
+F:	ARM64-RTOS/include/
+F:	ARM64-RTOS/config/
+F:	ARM64-RTOS/tests/
+
+X86_64 RTOS
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	X86_64-RTOS/
+
+SOFT PLC RUNTIME
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	SoftPLC/runtime/
+F:	SoftPLC/compiler/
+F:	SoftPLC/stdlib/
+F:	SoftPLC/programs/
+
+DISTRIBUTED CONTROL SYSTEM (DCS)
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	DCS/
+
+INDUSTRIAL PROTOCOLS - MODBUS
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	ARM64-RTOS/protocols/modbus/
+F:	ARM64-RTOS/include/modbus.h
+
+INDUSTRIAL PROTOCOLS - OPC UA
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	ARM64-RTOS/protocols/opcua/
+F:	ARM64-RTOS/include/opcua.h
+
+INDUSTRIAL PROTOCOLS - PROFINET
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	ARM64-RTOS/protocols/profinet/
+F:	ARM64-RTOS/include/profinet.h
+
+HMI - SERVER
+M:	HwlloChen <hwllochen@qq.com>
+R:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	HMI/server/
+
+HMI - WEB FRONTEND
+M:	HwlloChen <hwllochen@qq.com>
+S:	Maintained
+F:	HMI/web/
+F:	HMI/widgets/
+
+HMI - DATA HISTORIAN
+M:	HwlloChen <hwllochen@qq.com>
+R:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	HMI/historian/
+
+DEVELOPMENT TOOLS - SIMULATOR
+M:	HwlloChen <hwllochen@qq.com>
+R:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	devtools/simulator/
+
+DEVELOPMENT TOOLS - DEBUGGER
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	devtools/debugger/
+
+DEVELOPMENT TOOLS - FLASHER
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	devtools/flasher/
+
+DOCUMENTATION
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+M:	HwlloChen <hwllochen@qq.com>
+S:	Maintained
+F:	docs/
+F:	README.md
+F:	CONTRIBUTING.md
+
+EXAMPLES
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+M:	HwlloChen <hwllochen@qq.com>
+S:	Maintained
+F:	examples/
+
+BUILD SYSTEM
+M:	Amiya167 <neuvillette-fontaine@outlook.com>
+S:	Maintained
+F:	ARM64-RTOS/Makefile
+F:	ARM64-RTOS/config/linker.ld

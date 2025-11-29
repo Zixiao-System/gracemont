@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <rect x="10" y="10" width="80" height="80" rx="8" fill="#1976d2"/>
+  <text x="50" y="58" font-family="Arial, sans-serif" font-size="28" font-weight="bold" fill="white" text-anchor="middle">PLC</text>
+  <rect x="20" y="70" width="8" height="12" fill="#4caf50"/>
+  <rect x="32" y="70" width="8" height="12" fill="#ff9800"/>
+  <rect x="44" y="70" width="8" height="12" fill="#f44336"/>
+  <rect x="56" y="70" width="8" height="12" fill="#4caf50"/>
+  <rect x="68" y="70" width="8" height="12" fill="#ff9800"/>
+</svg>

@@ -1,0 +1,277 @@
+:root {
+  --ide-header-height: 48px;
+  --ide-sidebar-width: 280px;
+  --ide-bottom-panel-height: 200px;
+  --ide-toolbar-height: 40px;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+#app {
+  width: 100%;
+  height: 100%;
+}
+
+/* 滚动条样式 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--mdui-color-surface-variant));
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--mdui-color-outline));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--mdui-color-outline-variant));
+}
+
+/* Monaco Editor 容器 */
+.monaco-container {
+  width: 100%;
+  height: 100%;
+}
+
+/* 树形视图样式 */
+.tree-item {
+  cursor: pointer;
+  user-select: none;
+}
+
+.tree-item:hover {
+  background-color: rgba(var(--mdui-color-primary), 0.08);
+}
+
+.tree-item.selected {
+  background-color: rgba(var(--mdui-color-primary), 0.12);
+}
+
+/* 状态指示器 */
+.status-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.status-indicator.online {
+  background-color: #4caf50;
+}
+
+.status-indicator.offline {
+  background-color: #9e9e9e;
+}
+
+.status-indicator.error {
+  background-color: #f44336;
+}
+
+.status-indicator.running {
+  background-color: #2196f3;
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* 分隔面板 */
+.split-pane {
+  display: flex;
+  height: 100%;
+}
+
+.split-pane-horizontal {
+  flex-direction: row;
+}
+
+.split-pane-vertical {
+  flex-direction: column;
+}
+
+.split-pane-divider {
+  background-color: rgb(var(--mdui-color-outline-variant));
+  flex-shrink: 0;
+}
+
+.split-pane-horizontal > .split-pane-divider {
+  width: 4px;
+  cursor: col-resize;
+}
+
+.split-pane-vertical > .split-pane-divider {
+  height: 4px;
+  cursor: row-resize;
+}
+
+.split-pane-divider:hover {
+  background-color: rgb(var(--mdui-color-primary));
+}
+
+/* 梯形图样式 */
+.ladder-diagram {
+  background-color: rgb(var(--mdui-color-surface));
+  min-height: 100%;
+}
+
+.ladder-rung {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid rgb(var(--mdui-color-outline-variant));
+  padding: 8px 16px;
+  min-height: 60px;
+}
+
+.ladder-rung:hover {
+  background-color: rgba(var(--mdui-color-primary), 0.04);
+}
+
+.ladder-rung.selected {
+  background-color: rgba(var(--mdui-color-primary), 0.08);
+}
+
+.ladder-element {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 48px;
+  border: 2px solid rgb(var(--mdui-color-outline));
+  margin: 0 4px;
+  position: relative;
+  background-color: rgb(var(--mdui-color-surface));
+}
+
+.ladder-element.contact {
+  border-color: rgb(var(--mdui-color-primary));
+}
+
+.ladder-element.coil {
+  border-radius: 50%;
+  border-color: rgb(var(--mdui-color-secondary));
+}
+
+.ladder-wire {
+  flex: 1;
+  height: 2px;
+  background-color: rgb(var(--mdui-color-outline));
+  min-width: 20px;
+}
+
+.ladder-power-rail {
+  width: 4px;
+  background-color: rgb(var(--mdui-color-primary));
+  height: 100%;
+}
+
+/* FBD 功能块图样式 */
+.fbd-canvas {
+  position: relative;
+  background-color: rgb(var(--mdui-color-surface));
+  background-image:
+    linear-gradient(rgba(var(--mdui-color-outline-variant), 0.3) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(var(--mdui-color-outline-variant), 0.3) 1px, transparent 1px);
+  background-size: 20px 20px;
+  min-height: 100%;
+}
+
+.fbd-block {
+  position: absolute;
+  background-color: rgb(var(--mdui-color-surface-container));
+  border: 2px solid rgb(var(--mdui-color-outline));
+  border-radius: 4px;
+  min-width: 100px;
+  min-height: 60px;
+}
+
+.fbd-block-header {
+  background-color: rgb(var(--mdui-color-primary));
+  color: rgb(var(--mdui-color-on-primary));
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 500;
+  border-radius: 2px 2px 0 0;
+}
+
+.fbd-block-body {
+  padding: 8px;
+}
+
+.fbd-port {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background-color: rgb(var(--mdui-color-outline));
+  position: absolute;
+}
+
+.fbd-port.input {
+  left: -6px;
+}
+
+.fbd-port.output {
+  right: -6px;
+}
+
+.fbd-connection {
+  stroke: rgb(var(--mdui-color-outline));
+  stroke-width: 2;
+  fill: none;
+}
+
+/* SFC 顺序功能图样式 */
+.sfc-canvas {
+  position: relative;
+  background-color: rgb(var(--mdui-color-surface));
+  min-height: 100%;
+}
+
+.sfc-step {
+  position: absolute;
+  width: 120px;
+  height: 60px;
+  background-color: rgb(var(--mdui-color-surface-container));
+  border: 2px solid rgb(var(--mdui-color-outline));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+}
+
+.sfc-step.initial {
+  border-width: 4px;
+}
+
+.sfc-step.active {
+  background-color: rgb(var(--mdui-color-primary-container));
+  border-color: rgb(var(--mdui-color-primary));
+}
+
+.sfc-transition {
+  position: absolute;
+  width: 80px;
+  height: 8px;
+  background-color: rgb(var(--mdui-color-outline));
+}
+
+.sfc-action {
+  position: absolute;
+  width: 100px;
+  padding: 8px;
+  background-color: rgb(var(--mdui-color-tertiary-container));
+  border: 1px solid rgb(var(--mdui-color-tertiary));
+  font-size: 12px;
+}
