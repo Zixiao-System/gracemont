@@ -1,1 +1,82 @@
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Build artifacts
+*.o
+*.obj
+*.elf
+*.bin
+*.hex
+*.map
+*.lst
+*.sym
+*.d
+*.su
+
+# Libraries
+*.a
+*.lib
+*.so
+*.dylib
+
+# Executables
+*.out
+*.exe
+
+# Build directories
+build/
+out/
+bin/
+obj/
+debug/
+release/
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.cproject
+.settings/
+
+# Backup files
+*.bak
+*.orig
+*.backup
+
+# Log files
+*.log
+
+# Dependency files
+*.dep
+
+# Temporary files
+*.tmp
+*.temp
+
+# ARM/Embedded toolchain
+*.axf
+*.i
+*.s.obj
+JLinkLog.txt
+*.jlink
+
+# Debug files
+*.dSYM/
+core
+core.*
+
+# Documentation generated
+docs/generated/
+doxygen/
+
+# Test coverage
+*.gcno
+*.gcda
+*.gcov
+coverage/
