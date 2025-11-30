@@ -230,7 +230,7 @@ static status_t virtq_init(eth_dev_t *dev, virtqueue_t *vq, uint16_t qsel)
     /* Allocate DMA memory */
     size_t total = desc_size + avail_size + used_size;
     void *mem = dma_alloc(total);
-    if (!mem) return STATUS_NOMEM;
+    if (!mem) return STATUS_NO_MEM;
 
     /* Clear memory */
     for (size_t i = 0; i < total; i++) {
@@ -304,14 +304,14 @@ static status_t eth_rx_add_buffer(eth_dev_t *dev)
 
     if (vq->num_free < 2) {
         spin_unlock(&vq->lock);
-        return STATUS_NOMEM;
+        return STATUS_NO_MEM;
     }
 
     /* Allocate zbuf */
     zbuf_t *zb = zbuf_alloc_rx(CONFIG_ZBUF_SIZE);
     if (!zb) {
         spin_unlock(&vq->lock);
-        return STATUS_NOMEM;
+        return STATUS_NO_MEM;
     }
 
     /* Reserve space for virtio header */
@@ -325,7 +325,7 @@ static status_t eth_rx_add_buffer(eth_dev_t *dev)
         if (hdr_idx >= 0) virtq_free_desc(vq, hdr_idx);
         zbuf_free(zb);
         spin_unlock(&vq->lock);
-        return STATUS_NOMEM;
+        return STATUS_NO_MEM;
     }
 
     /* Setup header descriptor */
@@ -348,7 +348,7 @@ static status_t eth_rx_add_buffer(eth_dev_t *dev)
     vq->avail->ring[avail_idx] = hdr_idx;
 
     /* Memory barrier */
-    DMB();
+    dmb();
 
     vq->avail->idx++;
 
@@ -379,7 +379,7 @@ static void eth_rx_process(eth_dev_t *dev)
 
     while (vq->last_used_idx != vq->used->idx) {
         /* Memory barrier */
-        DMB();
+        dmb();
 
         uint16_t used_idx = vq->last_used_idx % vq->num;
         uint16_t desc_idx = vq->used->ring[used_idx].id;
@@ -443,7 +443,7 @@ static status_t eth_send(netif_t *nif, zbuf_t *zb)
         spin_unlock(&vq->lock);
         zbuf_free(zb);
         dev->tx_errors++;
-        return STATUS_NOMEM;
+        return STATUS_NO_MEM;
     }
 
     /* Add virtio header */
@@ -452,7 +452,7 @@ static status_t eth_send(netif_t *nif, zbuf_t *zb)
         spin_unlock(&vq->lock);
         zbuf_free(zb);
         dev->tx_errors++;
-        return STATUS_NOMEM;
+        return STATUS_NO_MEM;
     }
 
     /* Clear header */
@@ -466,7 +466,7 @@ static status_t eth_send(netif_t *nif, zbuf_t *zb)
         spin_unlock(&vq->lock);
         zbuf_free(zb);
         dev->tx_errors++;
-        return STATUS_NOMEM;
+        return STATUS_NO_MEM;
     }
 
     /* Setup descriptor */
@@ -483,7 +483,7 @@ static status_t eth_send(netif_t *nif, zbuf_t *zb)
     vq->avail->ring[avail_idx] = desc_idx;
 
     /* Memory barrier */
-    DMB();
+    dmb();
 
     vq->avail->idx++;
 
@@ -509,7 +509,7 @@ static void eth_tx_process(eth_dev_t *dev)
     spin_lock(&vq->lock);
 
     while (vq->last_used_idx != vq->used->idx) {
-        DMB();
+        dmb();
 
         uint16_t used_idx = vq->last_used_idx % vq->num;
         uint16_t desc_idx = vq->used->ring[used_idx].id;
@@ -531,7 +531,7 @@ static void eth_tx_process(eth_dev_t *dev)
 /*
  * IRQ Handler
  */
-static void eth_irq_handler(uint32_t irq, void *arg)
+static void eth_irq_handler(uint32_t irq __attribute__((unused)), void *arg)
 {
     eth_dev_t *dev = (eth_dev_t *)arg;
 

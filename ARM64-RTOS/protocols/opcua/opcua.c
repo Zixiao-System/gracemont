@@ -26,6 +26,8 @@
 #include "opcua.h"
 #include "rtos_config.h"
 
+extern void *heap_alloc(size_t size);
+
 /*
  * Binary Encoding Helpers
  */
@@ -214,12 +216,18 @@ uint8_t *opcua_encode_variant(uint8_t *buf, opcua_variant_t *variant)
     case OPCUA_TYPE_UINT64:
         write_u64(&buf, variant->value.u64);
         break;
-    case OPCUA_TYPE_FLOAT:
-        write_u32(&buf, *(uint32_t *)&variant->value.f32);
+    case OPCUA_TYPE_FLOAT: {
+        uint32_t tmp;
+        __builtin_memcpy(&tmp, &variant->value.f32, sizeof(tmp));
+        write_u32(&buf, tmp);
         break;
-    case OPCUA_TYPE_DOUBLE:
-        write_u64(&buf, *(uint64_t *)&variant->value.f64);
+    }
+    case OPCUA_TYPE_DOUBLE: {
+        uint64_t tmp;
+        __builtin_memcpy(&tmp, &variant->value.f64, sizeof(tmp));
+        write_u64(&buf, tmp);
         break;
+    }
     case OPCUA_TYPE_STRING:
         buf = opcua_encode_string(buf, variant->value.string.data);
         break;
@@ -266,12 +274,12 @@ uint8_t *opcua_decode_variant(uint8_t *buf, opcua_variant_t *variant)
         break;
     case OPCUA_TYPE_FLOAT: {
         uint32_t tmp = read_u32(&buf);
-        variant->value.f32 = *(float *)&tmp;
+        __builtin_memcpy(&variant->value.f32, &tmp, sizeof(tmp));
         break;
     }
     case OPCUA_TYPE_DOUBLE: {
         uint64_t tmp = read_u64(&buf);
-        variant->value.f64 = *(double *)&tmp;
+        __builtin_memcpy(&variant->value.f64, &tmp, sizeof(tmp));
         break;
     }
     case OPCUA_TYPE_STRING:
@@ -389,7 +397,7 @@ status_t opcua_get_value(opcua_node_t *node, opcua_variant_t *value)
 /*
  * Build OPC UA Message (Zero-Copy)
  */
-static zbuf_t *opcua_build_message(opcua_server_t *server, const char *type,
+static zbuf_t *opcua_build_message(opcua_server_t *server __attribute__((unused)), const char *type,
                                     uint8_t *payload, uint32_t payload_len)
 {
     uint32_t msg_len = 8 + payload_len;  /* Header + payload */
@@ -420,7 +428,7 @@ static zbuf_t *opcua_build_message(opcua_server_t *server, const char *type,
 /*
  * Process Hello Message
  */
-static zbuf_t *opcua_handle_hello(opcua_server_t *server, zbuf_t *req)
+static zbuf_t *opcua_handle_hello(opcua_server_t *server, zbuf_t *req __attribute__((unused)))
 {
     uint8_t ack[28];
     uint8_t *p = ack;
@@ -442,8 +450,8 @@ static zbuf_t *opcua_handle_open_channel(opcua_server_t *server, zbuf_t *req)
     uint8_t *data = req->data + 12;  /* Skip header + security header */
 
     /* Parse request */
-    uint32_t req_type = read_u32(&data);
-    uint32_t sec_mode = read_u32(&data);
+    (void)read_u32(&data); /* req_type */
+    (void)read_u32(&data); /* sec_mode */
 
     /* Build response */
     uint8_t resp[128];
@@ -500,12 +508,12 @@ static zbuf_t *opcua_handle_service(opcua_server_t *server, zbuf_t *req)
     uint32_t token_id = read_u32(&data);
 
     /* Sequence header */
-    uint32_t seq_num = read_u32(&data);
+    (void)read_u32(&data); /* seq_num */
     uint32_t req_id = read_u32(&data);
 
     /* Type ID */
-    uint8_t encoding = read_u8(&data);
-    uint8_t ns = read_u8(&data);
+    (void)read_u8(&data); /* encoding */
+    (void)read_u8(&data); /* ns */
     uint16_t type_id = read_u16(&data);
 
     /* Prepare response buffer */
@@ -666,8 +674,8 @@ static zbuf_t *opcua_handle_service(opcua_server_t *server, zbuf_t *req)
         data += 24;
 
         /* Read parameters */
-        uint64_t max_age = read_u64(&data);
-        uint32_t timestamps = read_u32(&data);
+        (void)read_u64(&data); /* max_age */
+        (void)read_u32(&data); /* timestamps */
         uint32_t node_count = read_u32(&data);
 
         /* Type ID for ReadResponse */
@@ -689,7 +697,7 @@ static zbuf_t *opcua_handle_service(opcua_server_t *server, zbuf_t *req)
         for (uint32_t i = 0; i < node_count && i < 16; i++) {
             opcua_nodeid_t node_id;
             data = opcua_decode_nodeid(data, &node_id);
-            uint32_t attr_id = read_u32(&data);
+            (void)read_u32(&data); /* attr_id */
 
             /* Skip index range and data encoding */
             uint32_t ir_len = read_u32(&data);
@@ -742,16 +750,16 @@ static zbuf_t *opcua_handle_service(opcua_server_t *server, zbuf_t *req)
         for (uint32_t i = 0; i < node_count && i < 16; i++) {
             opcua_nodeid_t node_id;
             data = opcua_decode_nodeid(data, &node_id);
-            uint32_t attr_id = read_u32(&data);
+            (void)read_u32(&data); /* attr_id */
 
             /* Skip index range */
             uint32_t ir_len = read_u32(&data);
             if (ir_len != 0xFFFFFFFF) data += ir_len;
 
             /* Read value */
-            uint8_t encoding = read_u8(&data);
+            uint8_t enc = read_u8(&data);
             opcua_variant_t value;
-            if (encoding & 0x01) {
+            if (enc & 0x01) {
                 data = opcua_decode_variant(data, &value);
             }
 

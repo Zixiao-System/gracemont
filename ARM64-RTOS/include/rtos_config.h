@@ -86,6 +86,8 @@
 /* UART Configuration */
 #define CONFIG_UART_BASE             0x09000000
 #define CONFIG_UART_IRQ              33
+#define CONFIG_UART_COUNT            1
+#define CONFIG_UART_CLOCK            24000000    /* 24 MHz */
 
 /* Ethernet Configuration */
 #define CONFIG_ETH_BASE              0x0A000000

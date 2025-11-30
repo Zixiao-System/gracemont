@@ -25,6 +25,9 @@
 
 #include "net_stack.h"
 #include "rtos_config.h"
+#include "rtos_types.h"
+
+extern void sem_post(semaphore_t *sem);
 
 /* Network Interface List */
 static netif_t *netif_list = NULL;
@@ -32,9 +35,9 @@ static netif_t *netif_default = NULL;
 static spinlock_t netif_lock = SPINLOCK_INIT;
 
 /* Socket Table */
-static socket_t *socket_table[CONFIG_NET_MAX_SOCKETS];
-static spinlock_t socket_lock = SPINLOCK_INIT;
-static int next_fd = 0;
+socket_t *socket_table[CONFIG_NET_MAX_SOCKETS];
+spinlock_t socket_lock = SPINLOCK_INIT;
+static int next_fd __attribute__((unused)) = 0;
 
 /* ARP Cache */
 #define ARP_CACHE_SIZE  64
@@ -49,9 +52,9 @@ static arp_entry_t arp_cache[ARP_CACHE_SIZE];
 static spinlock_t arp_lock = SPINLOCK_INIT;
 
 /* TCP Connections */
-static socket_t *tcp_listen_list = NULL;
-static socket_t *tcp_conn_list = NULL;
-static spinlock_t tcp_lock = SPINLOCK_INIT;
+static socket_t *tcp_listen_list __attribute__((unused)) = NULL;
+static socket_t *tcp_conn_list __attribute__((unused)) = NULL;
+static spinlock_t tcp_lock __attribute__((unused)) = SPINLOCK_INIT;
 
 /*
  * Byte Order Functions
@@ -433,7 +436,7 @@ status_t ip_output(zbuf_t *zb, uint32_t src, uint32_t dst, uint8_t proto)
 /*
  * ICMP Functions
  */
-void icmp_input(netif_t *nif, zbuf_t *zb)
+void icmp_input(netif_t *nif __attribute__((unused)), zbuf_t *zb)
 {
     if (zb->len < sizeof(icmp_hdr_t)) {
         zbuf_free(zb);
@@ -463,7 +466,7 @@ void icmp_input(netif_t *nif, zbuf_t *zb)
 /*
  * UDP Functions
  */
-void udp_input(netif_t *nif, zbuf_t *zb)
+void udp_input(netif_t *nif __attribute__((unused)), zbuf_t *zb)
 {
     if (zb->len < sizeof(udp_hdr_t)) {
         zbuf_free(zb);
@@ -477,7 +480,8 @@ void udp_input(netif_t *nif, zbuf_t *zb)
     /* Get IP addresses from IP header */
     ip_hdr_t *ip = (ip_hdr_t *)(zb->data - sizeof(ip_hdr_t));
     uint32_t src_ip = ntohl(ip->src);
-    uint32_t dst_ip = ntohl(ip->dst);
+    (void)src_ip;
+    uint32_t dst_ip __attribute__((unused)) = ntohl(ip->dst);
 
     /* Find matching socket */
     spin_lock(&socket_lock);

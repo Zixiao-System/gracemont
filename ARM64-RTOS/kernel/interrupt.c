@@ -47,8 +47,8 @@
 #define GICC_HPPIR          (CONFIG_GICC_BASE + 0x018)
 
 /* Memory-Mapped I/O */
-#define mmio_read32(addr)       (*(volatile uint32_t *)(addr))
-#define mmio_write32(addr, val) (*(volatile uint32_t *)(addr) = (val))
+#define mmio_read32(addr)       (*(volatile uint32_t *)(uintptr_t)(addr))
+#define mmio_write32(addr, val) (*(volatile uint32_t *)(uintptr_t)(addr) = (val))
 
 /* IRQ Handler Table */
 #define MAX_IRQS    1024

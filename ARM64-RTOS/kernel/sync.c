@@ -26,9 +26,6 @@
 #include "rtos_types.h"
 #include "rtos_config.h"
 
-extern tcb_t *task_current(void);
-extern void task_yield(void);
-
 /*
  * Wait List Management
  */
@@ -55,7 +52,7 @@ static tcb_t *wait_list_remove_first(tcb_t **list)
     return task;
 }
 
-static void wait_list_remove(tcb_t **list, tcb_t *task)
+static void __attribute__((unused)) wait_list_remove(tcb_t **list, tcb_t *task)
 {
     if (task->prev != NULL) {
         task->prev->next = task->next;

@@ -25,9 +25,22 @@
 
 #include "net_stack.h"
 #include "rtos_config.h"
+#include "rtos_types.h"
 
+/* External declarations */
 extern socket_t *socket_table[CONFIG_NET_MAX_SOCKETS];
 extern spinlock_t socket_lock;
+extern void *heap_alloc(size_t size);
+extern void heap_free(void *ptr);
+extern void sem_init(semaphore_t *sem, int32_t initial);
+extern status_t sem_wait(semaphore_t *sem);
+extern void sem_post(semaphore_t *sem);
+extern void mutex_init(mutex_t *mutex);
+extern status_t mutex_lock(mutex_t *mutex);
+extern void mutex_unlock(mutex_t *mutex);
+
+static int next_fd = 0;
+#define MS_TO_TICKS(ms) ((ms) * CONFIG_TICK_RATE_HZ / 1000)
 
 static socket_t *tcp_listen_list = NULL;
 static socket_t *tcp_conn_list = NULL;
@@ -55,7 +68,7 @@ static tcp_rto_t tcp_rto[CONFIG_NET_MAX_SOCKETS];
 /*
  * Send RST segment
  */
-static void tcp_send_rst(netif_t *nif, ip_hdr_t *ip, tcp_hdr_t *tcp_in, uint16_t tcp_len)
+static void tcp_send_rst(netif_t *nif __attribute__((unused)), ip_hdr_t *ip, tcp_hdr_t *tcp_in, uint16_t tcp_len)
 {
     zbuf_t *zb = zbuf_alloc_tx(0);
     if (zb == NULL) return;
@@ -67,7 +80,7 @@ static void tcp_send_rst(netif_t *nif, ip_hdr_t *ip, tcp_hdr_t *tcp_in, uint16_t
     }
 
     uint32_t seq_in = ntohl(tcp_in->seq);
-    uint32_t ack_in = ntohl(tcp_in->ack);
+    uint32_t ack_in __attribute__((unused)) = ntohl(tcp_in->ack);
     uint8_t flags_in = tcp_in->flags;
 
     tcp->sport = tcp_in->dport;
@@ -100,7 +113,7 @@ static void tcp_send_rst(netif_t *nif, ip_hdr_t *ip, tcp_hdr_t *tcp_in, uint16_t
 /*
  * Update RTO based on RTT measurement
  */
-static void tcp_update_rto(int fd, tick_t rtt)
+static void __attribute__((unused)) tcp_update_rto(int fd, tick_t rtt)
 {
     tcp_rto_t *rto = &tcp_rto[fd % CONFIG_NET_MAX_SOCKETS];
 
@@ -126,7 +139,7 @@ static void tcp_update_rto(int fd, tick_t rtt)
 /*
  * Initialize RTO state for socket
  */
-static void tcp_init_rto(int fd)
+static void __attribute__((unused)) tcp_init_rto(int fd)
 {
     tcp_rto_t *rto = &tcp_rto[fd % CONFIG_NET_MAX_SOCKETS];
     rto->rto = TCP_RTO_INITIAL;
@@ -207,7 +220,7 @@ static status_t tcp_send_segment(socket_t *sock, uint8_t flags, zbuf_t *data)
 /*
  * TCP Connection Lookup
  */
-static socket_t *tcp_find_socket(uint32_t local_ip, uint16_t local_port,
+static socket_t *tcp_find_socket(uint32_t local_ip __attribute__((unused)), uint16_t local_port,
                                   uint32_t remote_ip, uint16_t remote_port)
 {
     socket_t *sock;
@@ -457,7 +470,7 @@ int sock_bind(int fd, sockaddr_t *addr)
     return 0;
 }
 
-int sock_listen(int fd, int backlog)
+int sock_listen(int fd, int backlog __attribute__((unused)))
 {
     socket_t *sock = socket_table[fd % CONFIG_NET_MAX_SOCKETS];
     if (sock == NULL || sock->type != SOCK_STREAM) return -1;

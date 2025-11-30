@@ -95,6 +95,19 @@ typedef struct {
 
 #define SPINLOCK_INIT { 0, 0 }
 
+/* Spinlock Functions (defined in scheduler.c) */
+extern void spin_lock(spinlock_t *lock);
+extern void spin_unlock(spinlock_t *lock);
+extern void spin_lock_irq(spinlock_t *lock);
+extern void spin_unlock_irq(spinlock_t *lock);
+
+/* Task Functions (defined in scheduler.c) */
+extern void task_yield(void);
+extern void task_terminate(void);
+extern void task_sleep(tick_t ticks);
+extern tcb_t *task_current(void);
+extern tick_t get_system_ticks(void);
+
 /* Semaphore */
 typedef struct {
     volatile int32_t count;

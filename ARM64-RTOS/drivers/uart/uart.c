@@ -144,7 +144,7 @@ static uart_dev_t uart_devices[CONFIG_UART_COUNT];
 /*
  * IRQ Handler
  */
-static void uart_irq_handler(uint32_t irq, void *arg)
+static void uart_irq_handler(uint32_t irq __attribute__((unused)), void *arg)
 {
     uart_dev_t *dev = (uart_dev_t *)arg;
     uint32_t mis = UART_REG(dev, UART_MIS);

@@ -26,9 +26,11 @@
 #include "profinet.h"
 #include "rtos_config.h"
 
+extern void *heap_alloc(size_t size);
+
 /* PROFINET Multicast Addresses */
-static const uint8_t pnio_mc_rt[6] = {0x01, 0x0E, 0xCF, 0x00, 0x00, 0x00};
-static const uint8_t pnio_mc_dcp[6] = {0x01, 0x0E, 0xCF, 0x00, 0x00, 0x00};
+static const uint8_t pnio_mc_rt[6] __attribute__((unused)) = {0x01, 0x0E, 0xCF, 0x00, 0x00, 0x00};
+static const uint8_t pnio_mc_dcp[6] __attribute__((unused)) = {0x01, 0x0E, 0xCF, 0x00, 0x00, 0x00};
 
 /*
  * Device Initialization
@@ -401,7 +403,7 @@ void pnio_dcp_input(pnio_device_t *dev, zbuf_t *zb)
             resp->len = p - resp->data;
 
             /* Send response via Ethernet */
-            eth_hdr_t *eth_req = (eth_hdr_t *)(zb->data - ETH_HDR_LEN - 2);
+            (void)(zb->data - ETH_HDR_LEN - 2); /* eth_req unused */
             dev->netif->send(dev->netif, resp);
         }
     } else if (service_id == DCP_SERVICE_SET && service_type == DCP_SERVICE_TYPE_REQUEST) {

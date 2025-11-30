@@ -70,7 +70,7 @@ static void print_hex(uint32_t val)
 }
 
 /* Timer Driver */
-static void timer_irq_handler(uint32_t irq, void *arg)
+static void timer_irq_handler(uint32_t irq __attribute__((unused)), void *arg __attribute__((unused)))
 {
     extern void scheduler_tick(void);
     extern void timer_tick_handler(void);
@@ -104,7 +104,7 @@ static void timer_init(void)
 /* Network Interface (简化以太网驱动) */
 static netif_t eth0;
 
-static status_t eth_send(netif_t *nif, zbuf_t *zb)
+static status_t eth_send(netif_t *nif __attribute__((unused)), zbuf_t *zb)
 {
     /* 实际实现会将数据写入DMA描述符 */
     /* 这里简化处理 */
@@ -163,7 +163,7 @@ static tcb_t profinet_tcb;
 /*
  * Modbus Server Task
  */
-static void modbus_task(void *arg)
+static void modbus_task(void *arg __attribute__((unused)))
 {
     uart_puts("[Modbus] Starting server on port 502\n");
 
@@ -190,7 +190,7 @@ static void modbus_task(void *arg)
 /*
  * OPC UA Server Task
  */
-static void opcua_task(void *arg)
+static void opcua_task(void *arg __attribute__((unused)))
 {
     uart_puts("[OPC UA] Starting server on port 4840\n");
 
@@ -233,7 +233,7 @@ static void opcua_task(void *arg)
 /*
  * PROFINET RT Task
  */
-static void profinet_task(void *arg)
+static void profinet_task(void *arg __attribute__((unused)))
 {
     uart_puts("[PROFINET] Starting device\n");
 
@@ -270,7 +270,7 @@ static void profinet_task(void *arg)
 /*
  * Main Application Task
  */
-static void main_task(void *arg)
+static void main_task(void *arg __attribute__((unused)))
 {
     uart_puts("\n");
     uart_puts("========================================\n");
@@ -335,7 +335,7 @@ static void main_task(void *arg)
 /*
  * Exception Handlers
  */
-void sync_exception_handler(void *frame)
+void sync_exception_handler(void *frame __attribute__((unused)))
 {
     uint64_t esr, elr, far;
     __asm__ volatile("mrs %0, esr_el1" : "=r"(esr));
@@ -363,7 +363,7 @@ void fiq_handler(void)
     uart_puts("FIQ!\n");
 }
 
-void serror_handler(void *frame)
+void serror_handler(void *frame __attribute__((unused)))
 {
     uart_puts("SError!\n");
     while (1) {

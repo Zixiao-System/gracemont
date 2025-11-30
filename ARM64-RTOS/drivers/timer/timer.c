@@ -197,7 +197,7 @@ void timer_tick_handler(void)
 /*
  * Timer IRQ Handler
  */
-static void timer_irq_handler(uint32_t irq, void *arg)
+static void timer_irq_handler(uint32_t irq __attribute__((unused)), void *arg)
 {
     (void)arg;
 

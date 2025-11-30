@@ -26,6 +26,9 @@
 #include "modbus.h"
 #include "rtos_config.h"
 
+extern void *heap_alloc(size_t size);
+extern void heap_free(void *ptr);
+
 /* CRC16 Table for Modbus RTU */
 static const uint16_t crc16_table[256] = {
     0x0000, 0xC0C1, 0xC181, 0x0140, 0xC301, 0x03C0, 0x0280, 0xC241,
@@ -299,7 +302,7 @@ static zbuf_t *modbus_process_request(modbus_server_t *server, zbuf_t *req)
     case MODBUS_FC_WRITE_MULTIPLE_COILS: {
         uint16_t addr = (pdu[1] << 8) | pdu[2];
         uint16_t count = (pdu[3] << 8) | pdu[4];
-        uint8_t byte_count = pdu[5];
+        (void)pdu[5]; /* byte_count */
 
         if (addr + count > data->coils_count) {
             resp = modbus_build_exception(function, MODBUS_EX_ILLEGAL_DATA_ADDRESS);
@@ -332,7 +335,7 @@ static zbuf_t *modbus_process_request(modbus_server_t *server, zbuf_t *req)
     case MODBUS_FC_WRITE_MULTIPLE_REGISTERS: {
         uint16_t addr = (pdu[1] << 8) | pdu[2];
         uint16_t count = (pdu[3] << 8) | pdu[4];
-        uint8_t byte_count = pdu[5];
+        (void)pdu[5]; /* byte_count */
 
         if (addr + count > data->holding_registers_count) {
             resp = modbus_build_exception(function, MODBUS_EX_ILLEGAL_DATA_ADDRESS);
@@ -420,7 +423,7 @@ void modbus_server_poll(modbus_server_t *server)
     /* Parse MBAP header */
     modbus_tcp_hdr_t *mbap = (modbus_tcp_hdr_t *)zb->data;
     uint16_t trans_id = ntohs(mbap->transaction_id);
-    uint16_t pdu_len = ntohs(mbap->length) - 1;
+    (void)ntohs(mbap->length); /* pdu_len */
 
     /* Check unit ID */
     if (mbap->unit_id != server->slave_addr && mbap->unit_id != 0) {
@@ -560,7 +563,7 @@ status_t modbus_read_holding_registers(modbus_client_t *client, uint8_t slave,
         /* Exception */
         ret = STATUS_ERROR;
     } else {
-        uint8_t byte_count = data[1];
+        (void)data[1]; /* byte_count */
         for (uint16_t i = 0; i < count; i++) {
             result[i] = (data[2 + i * 2] << 8) | data[2 + i * 2 + 1];
         }

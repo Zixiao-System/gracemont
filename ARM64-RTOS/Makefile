@@ -24,7 +24,7 @@
 #
 
 # Toolchain
-CROSS_COMPILE ?= aarch64-none-elf-
+CROSS_COMPILE ?= aarch64-elf-
 CC      = $(CROSS_COMPILE)gcc
 AS      = $(CROSS_COMPILE)as
 LD      = $(CROSS_COMPILE)ld
@@ -58,7 +58,6 @@ C_SOURCES = \
     $(KERNEL_DIR)/interrupt.c \
     $(ARCH_DIR)/mmu.c \
     $(DRIVER_DIR)/uart/uart.c \
-    $(DRIVER_DIR)/timer/timer.c \
     $(DRIVER_DIR)/eth/eth.c \
     $(NET_DIR)/buffer/zbuf.c \
     $(NET_DIR)/stack/net_core.c \
@@ -97,8 +96,7 @@ CFLAGS = -Wall -Wextra -Werror \
 ASFLAGS = -mcpu=cortex-a53 -march=armv8-a -g
 
 # Linker flags
-LDFLAGS = -nostdlib -nostartfiles \
-          -T $(CONFIG_DIR)/linker.ld \
+LDFLAGS = -T $(CONFIG_DIR)/linker.ld \
           --gc-sections \
           -Map=$(BUILD_DIR)/$(PROJECT).map
 

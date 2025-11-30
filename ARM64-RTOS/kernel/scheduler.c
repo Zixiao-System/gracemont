@@ -48,6 +48,8 @@ extern void arch_irq_restore(uint64_t flags);
 /* Forward Declarations */
 static void idle_task(void *arg);
 static void schedule_locked(void);
+void task_terminate(void);
+void task_yield(void);
 
 /*
  * Spinlock Operations
