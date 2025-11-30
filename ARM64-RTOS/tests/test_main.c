@@ -55,14 +55,14 @@ void test_task(void *arg)
     (void)arg;
 
     /* Wait for system to stabilize */
-    task_delay(100);
+    task_sleep(100);
 
     /* Run tests */
     test_run_all();
 
     /* Done */
     while (1) {
-        task_delay(1000);
+        task_sleep(1000);
     }
 }
 
@@ -70,15 +70,19 @@ void test_task(void *arg)
  * Main entry point for test build
  */
 #ifdef BUILD_TESTS
+static tcb_t test_tcb;
+static uint8_t test_stack[4096] __attribute__((aligned(16)));
+
 int test_main(void)
 {
     /* Create test task */
-    tcb_t *task = task_create("test", test_task, NULL, 2048, 10);
-    if (task == NULL) {
+    status_t ret = task_create(&test_tcb, "test", test_task, NULL, 10,
+                               test_stack, sizeof(test_stack));
+    if (ret != 0) {
         return -1;
     }
 
-    task_start(task);
+    task_start(&test_tcb);
 
     return 0;
 }
