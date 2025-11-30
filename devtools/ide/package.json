@@ -1,0 +1,85 @@
+{
+  "name": "greyy-lightningbearer-ide",
+  "productName": "Greyy the Lightningbearer - IDE",
+  "version": "0.1.0",
+  "description": "Integrated Development Environment for Gracemont Industrial Control Framework",
+  "author": "Zixiao System <https://github.com/Zixiao-System>",
+  "license": "GPL-3.0-or-later",
+  "main": "electron/main.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5176 && electron .\"",
+    "electron:build": "npm run build && electron-builder",
+    "electron:build:win": "npm run build && electron-builder --win",
+    "electron:build:mac": "npm run build && electron-builder --mac",
+    "electron:build:linux": "npm run build && electron-builder --linux"
+  },
+  "dependencies": {
+    "vue": "^3.4.0",
+    "vue-router": "^4.2.0",
+    "pinia": "^2.1.0",
+    "mdui": "^2.0.0",
+    "monaco-editor": "^0.45.0",
+    "xterm": "^5.3.0",
+    "xterm-addon-fit": "^0.8.0",
+    "node-pty": "^1.0.0",
+    "chokidar": "^3.5.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.0",
+    "vite": "^5.0.0",
+    "vite-plugin-monaco-editor": "^1.1.0",
+    "concurrently": "^8.2.0",
+    "wait-on": "^7.2.0"
+  },
+  "build": {
+    "appId": "com.zixiao.gracemont.ide",
+    "productName": "Greyy the Lightningbearer - IDE",
+    "directories": {
+      "output": "dist-electron"
+    },
+    "files": [
+      "dist/**/*",
+      "electron/**/*",
+      "node_modules/monaco-editor/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "resources",
+        "to": "resources",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": ["nsis"],
+      "icon": "build/icon.ico"
+    },
+    "mac": {
+      "target": ["dmg"],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.developer-tools"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "icon": "build/icon.png",
+      "category": "Development"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zixiao-System/gracemont.git"
+  },
+  "keywords": [
+    "industrial-control",
+    "ide",
+    "plc-programming",
+    "iec-61131-3",
+    "ladder-logic",
+    "structured-text",
+    "rtos-development"
+  ]
+}
