@@ -210,7 +210,8 @@ static void opcua_task(void *arg __attribute__((unused)))
     opcua_node_t *temp_node = opcua_add_node(&opcua_server, objects, &temp_id,
                                               OPCUA_NC_VARIABLE, "Temperature", "Temperature");
     if (temp_node) {
-        opcua_variant_t val = { .type = OPCUA_TYPE_FLOAT, .value.f32 = 25.5f };
+        /* Use INT32 with fixed-point scaling (x10) to avoid FP in kernel */
+        opcua_variant_t val = { .type = OPCUA_TYPE_INT32, .value.i32 = 255 };
         opcua_set_value(temp_node, &val);
     }
 
@@ -218,7 +219,8 @@ static void opcua_task(void *arg __attribute__((unused)))
     opcua_node_t *pressure_node = opcua_add_node(&opcua_server, objects, &pressure_id,
                                                   OPCUA_NC_VARIABLE, "Pressure", "Pressure");
     if (pressure_node) {
-        opcua_variant_t val = { .type = OPCUA_TYPE_FLOAT, .value.f32 = 101.3f };
+        /* Use INT32 with fixed-point scaling (x10) to avoid FP in kernel */
+        opcua_variant_t val = { .type = OPCUA_TYPE_INT32, .value.i32 = 1013 };
         opcua_set_value(pressure_node, &val);
     }
 
