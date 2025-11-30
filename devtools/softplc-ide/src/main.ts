@@ -8,7 +8,8 @@ import 'mdui/mdui.css'
 import 'mdui'
 
 // 设置中文语言
-import { loadLocale, setLocale } from 'mdui/functions/setLocale.js'
+import { loadLocale } from 'mdui/functions/loadLocale.js'
+import { setLocale } from 'mdui/functions/setLocale.js'
 
 loadLocale((locale: string) => import(`../node_modules/mdui/locales/${locale}.js`))
 setLocale('zh-cn')

@@ -158,13 +158,16 @@ static uint16_t tcp_checksum(ip_hdr_t *ip, tcp_hdr_t *tcp, uint16_t tcp_len)
     uint32_t sum = inet_pseudo_checksum(ntohl(ip->src), ntohl(ip->dst),
                                         IP_PROTO_TCP, tcp_len);
 
-    const uint16_t *ptr = (const uint16_t *)tcp;
-    while (tcp_len > 1) {
-        sum += *ptr++;
-        tcp_len -= 2;
+    /* Use byte-by-byte access to avoid packed pointer alignment issues */
+    const uint8_t *ptr = (const uint8_t *)tcp;
+    uint16_t remaining = tcp_len;
+    while (remaining > 1) {
+        sum += ((uint16_t)ptr[0] << 8) | ptr[1];
+        ptr += 2;
+        remaining -= 2;
     }
-    if (tcp_len == 1) {
-        sum += *(const uint8_t *)ptr;
+    if (remaining == 1) {
+        sum += (uint16_t)ptr[0] << 8;
     }
 
     while (sum >> 16) {
