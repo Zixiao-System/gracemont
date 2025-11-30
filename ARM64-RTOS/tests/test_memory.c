@@ -116,10 +116,12 @@ TEST_CASE(heap_alloc_large)
 /*
  * Test: Memory pool allocation
  */
+static uint8_t pool_buffer[64 * 8] __attribute__((aligned(8)));
+
 TEST_CASE(mempool_basic)
 {
     mempool_t pool;
-    status_t ret = mempool_init(&pool, 64, 8);
+    status_t ret = mempool_init(&pool, pool_buffer, 64, 8);
     TEST_ASSERT_EQ(ret, STATUS_OK);
 
     void *blocks[8];
@@ -158,7 +160,7 @@ TEST_CASE(dma_alloc_basic)
     /* Must be page aligned */
     TEST_ASSERT_EQ((addr_t)ptr & 0xFFF, 0);
 
-    dma_free(ptr);
+    dma_free(ptr, 4096);
     return TEST_PASS;
 }
 
