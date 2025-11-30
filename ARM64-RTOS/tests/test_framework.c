@@ -162,6 +162,8 @@ void test_assert_failed(const char *file, int line, const char *cond)
 
 void test_assert_eq_failed(const char *file, int line, uint64_t a, uint64_t b)
 {
+    (void)a;  /* Suppress unused parameter warning */
+    (void)b;  /* Suppress unused parameter warning */
     test_print("\n    Expected equal values at ");
     test_print(file);
     test_print(":");
@@ -171,6 +173,7 @@ void test_assert_eq_failed(const char *file, int line, uint64_t a, uint64_t b)
 
 void test_assert_ne_failed(const char *file, int line, uint64_t val)
 {
+    (void)val;  /* Suppress unused parameter warning */
     test_print("\n    Expected different values at ");
     test_print(file);
     test_print(":");
