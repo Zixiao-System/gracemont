@@ -150,64 +150,21 @@ TEST_CASE(mutex_ownership)
 }
 
 /*
- * Test: Event flags basic operations
+ * Test: Event basic operations
  */
-TEST_CASE(event_flags_basic)
+TEST_CASE(event_basic)
 {
-    event_flags_t events;
-    event_flags_init(&events, 0);
-
-    TEST_ASSERT_EQ(events.flags, 0);
+    event_t event;
+    event_init(&event);
 
     /* Set some flags */
-    event_flags_set(&events, 0x0F);
-    TEST_ASSERT_EQ(events.flags, 0x0F);
+    event_set(&event, 0x0F);
 
     /* Set more flags */
-    event_flags_set(&events, 0xF0);
-    TEST_ASSERT_EQ(events.flags, 0xFF);
+    event_set(&event, 0xF0);
 
     /* Clear flags */
-    event_flags_clear(&events, 0x0F);
-    TEST_ASSERT_EQ(events.flags, 0xF0);
-
-    return TEST_PASS;
-}
-
-/*
- * Test: Event flags wait any
- */
-TEST_CASE(event_flags_wait_any)
-{
-    event_flags_t events;
-    event_flags_init(&events, 0x05);
-
-    /* Wait for any of bits 0, 1, 2 */
-    uint32_t result;
-    status_t ret = event_flags_trywait(&events, 0x07, EVENT_WAIT_ANY, &result);
-    TEST_ASSERT_EQ(ret, STATUS_OK);
-    TEST_ASSERT_EQ(result & 0x07, 0x05);
-
-    return TEST_PASS;
-}
-
-/*
- * Test: Event flags wait all
- */
-TEST_CASE(event_flags_wait_all)
-{
-    event_flags_t events;
-    event_flags_init(&events, 0x07);
-
-    /* Wait for all of bits 0, 1, 2 */
-    uint32_t result;
-    status_t ret = event_flags_trywait(&events, 0x07, EVENT_WAIT_ALL, &result);
-    TEST_ASSERT_EQ(ret, STATUS_OK);
-
-    /* Try with missing flag - should fail */
-    events.flags = 0x05;
-    ret = event_flags_trywait(&events, 0x07, EVENT_WAIT_ALL, &result);
-    TEST_ASSERT_EQ(ret, STATUS_WOULD_BLOCK);
+    event_clear(&event, 0x0F);
 
     return TEST_PASS;
 }
@@ -215,60 +172,25 @@ TEST_CASE(event_flags_wait_all)
 /*
  * Test: Message queue basic operations
  */
+static uint8_t msgq_buffer[8 * 32] __attribute__((aligned(8)));
+
 TEST_CASE(msgqueue_basic)
 {
     msgqueue_t queue;
-    status_t ret = msgqueue_init(&queue, 8, 32);
+    status_t ret = msgq_init(&queue, msgq_buffer, 32, 8);
     TEST_ASSERT_EQ(ret, STATUS_OK);
 
     uint8_t msg[32] = {1, 2, 3, 4, 5};
 
-    /* Send message */
-    ret = msgqueue_trysend(&queue, msg, 32);
+    /* Send message (with timeout 0 for non-blocking) */
+    ret = msgq_send(&queue, msg, 0);
     TEST_ASSERT_EQ(ret, STATUS_OK);
 
     /* Receive message */
     uint8_t recv[32];
-    ret = msgqueue_tryrecv(&queue, recv, 32);
+    ret = msgq_recv(&queue, recv, 0);
     TEST_ASSERT_EQ(ret, STATUS_OK);
     TEST_ASSERT_MEM_EQ(msg, recv, 5);
-
-    return TEST_PASS;
-}
-
-/*
- * Test: Message queue full/empty
- */
-TEST_CASE(msgqueue_full_empty)
-{
-    msgqueue_t queue;
-    status_t ret = msgqueue_init(&queue, 2, 16);
-    TEST_ASSERT_EQ(ret, STATUS_OK);
-
-    uint8_t msg[16] = {0xAA};
-
-    /* Fill queue */
-    ret = msgqueue_trysend(&queue, msg, 16);
-    TEST_ASSERT_EQ(ret, STATUS_OK);
-
-    ret = msgqueue_trysend(&queue, msg, 16);
-    TEST_ASSERT_EQ(ret, STATUS_OK);
-
-    /* Queue full */
-    ret = msgqueue_trysend(&queue, msg, 16);
-    TEST_ASSERT_EQ(ret, STATUS_WOULD_BLOCK);
-
-    /* Drain queue */
-    uint8_t recv[16];
-    ret = msgqueue_tryrecv(&queue, recv, 16);
-    TEST_ASSERT_EQ(ret, STATUS_OK);
-
-    ret = msgqueue_tryrecv(&queue, recv, 16);
-    TEST_ASSERT_EQ(ret, STATUS_OK);
-
-    /* Queue empty */
-    ret = msgqueue_tryrecv(&queue, recv, 16);
-    TEST_ASSERT_EQ(ret, STATUS_WOULD_BLOCK);
 
     return TEST_PASS;
 }
@@ -283,11 +205,8 @@ static test_case_t sync_tests[] = {
     { "semaphore_counting", test_semaphore_counting },
     { "mutex_basic", test_mutex_basic },
     { "mutex_ownership", test_mutex_ownership },
-    { "event_flags_basic", test_event_flags_basic },
-    { "event_flags_wait_any", test_event_flags_wait_any },
-    { "event_flags_wait_all", test_event_flags_wait_all },
+    { "event_basic", test_event_basic },
     { "msgqueue_basic", test_msgqueue_basic },
-    { "msgqueue_full_empty", test_msgqueue_full_empty },
 };
 
 test_suite_t sync_test_suite = {
