@@ -1,8 +1,8 @@
 {
-  "name": "greyy-lightningbearer-simulator",
-  "productName": "Greyy the Lightningbearer - Simulator",
+  "name": "greyy-lightningbearer-debugger",
+  "productName": "Greyy the Lightningbearer - Debugger",
   "version": "0.1.0",
-  "description": "Hardware simulator for Gracemont Industrial Control Framework",
+  "description": "Hardware debugger and diagnostic tools for Gracemont Industrial Control Framework",
   "author": "Zixiao System <https://github.com/Zixiao-System>",
   "license": "GPL-3.0-or-later",
   "main": "electron/main.js",
@@ -10,7 +10,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5173 && electron .\"",
+    "electron:dev": "concurrently \"npm run dev\" \"wait-on http://localhost:5174 && electron .\"",
     "electron:build": "npm run build && electron-builder",
     "electron:build:win": "npm run build && electron-builder --win",
     "electron:build:mac": "npm run build && electron-builder --mac",
@@ -23,11 +23,9 @@
     "mdui": "^2.0.0",
     "xterm": "^5.3.0",
     "xterm-addon-fit": "^0.8.0",
-    "node-pty": "^1.0.0",
+    "serialport": "^12.0.0",
+    "usb": "^2.11.0",
     "modbus-serial": "^8.0.0",
-    "node-opcua": "^2.110.0",
-    "chart.js": "^4.4.0",
-    "vue-chartjs": "^5.3.0",
     "@vueuse/core": "^10.7.0"
   },
   "devDependencies": {
@@ -40,14 +38,21 @@
     "@mdui/icons": "^1.0.0"
   },
   "build": {
-    "appId": "com.zixiao.gracemont.simulator",
-    "productName": "Greyy the Lightningbearer - Simulator",
+    "appId": "com.zixiao.gracemont.debugger",
+    "productName": "Greyy the Lightningbearer - Debugger",
     "directories": {
       "output": "dist-electron"
     },
     "files": [
       "dist/**/*",
       "electron/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "resources",
+        "to": "resources",
+        "filter": ["**/*"]
+      }
     ],
     "win": {
       "target": ["nsis"],
@@ -70,10 +75,12 @@
   },
   "keywords": [
     "industrial-control",
-    "hardware-simulator",
+    "debugger",
+    "hardware-debugging",
     "rtos",
     "arm64",
-    "plc",
-    "scada"
+    "gdb",
+    "jtag",
+    "swd"
   ]
 }

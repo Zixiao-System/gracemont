@@ -124,3 +124,5 @@ secrets/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+/devtools/ide/dist-electron/
+/devtools/flasher/dist-electron/

@@ -17,19 +17,22 @@
     "electron:build:linux": "npm run build && electron-builder --linux"
   },
   "dependencies": {
-    "vue": "^3.4.0",
-    "vue-router": "^4.2.0",
-    "pinia": "^2.1.0",
+    "@vueuse/core": "^10.7.0",
+    "crypto-js": "^4.2.0",
     "mdui": "^2.0.0",
+    "pinia": "^2.1.0",
     "serialport": "^12.0.0",
-    "usb": "^2.11.0"
+    "usb": "^2.11.0",
+    "vue": "^3.4.0",
+    "vue-router": "^4.2.0"
   },
   "devDependencies": {
+    "@mdui/icons": "^1.0.3",
     "@vitejs/plugin-vue": "^5.0.0",
+    "concurrently": "^8.2.0",
     "electron": "^28.0.0",
     "electron-builder": "^24.9.0",
     "vite": "^5.0.0",
-    "concurrently": "^8.2.0",
     "wait-on": "^7.2.0"
   },
   "build": {
@@ -46,20 +49,29 @@
       {
         "from": "resources",
         "to": "resources",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "win": {
-      "target": ["nsis"],
+      "target": [
+        "nsis"
+      ],
       "icon": "build/icon.ico"
     },
     "mac": {
-      "target": ["dmg"],
+      "target": [
+        "dmg"
+      ],
       "icon": "build/icon.icns",
       "category": "public.app-category.developer-tools"
     },
     "linux": {
-      "target": ["AppImage", "deb"],
+      "target": [
+        "AppImage",
+        "deb"
+      ],
       "icon": "build/icon.png",
       "category": "Development"
     }
