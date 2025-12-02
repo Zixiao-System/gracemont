@@ -1,0 +1,46 @@
+{
+  "name": "@gracemont/devtools-shared",
+  "version": "1.0.0",
+  "description": "Shared UI components and utilities for Gracemont DevTools",
+  "type": "module",
+  "main": "dist/index.js",
+  "module": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./components": {
+      "import": "./dist/components/index.js"
+    },
+    "./utils": {
+      "import": "./dist/utils/index.js"
+    },
+    "./styles": {
+      "import": "./dist/styles/index.css"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "dependencies": {
+    "vue": "^3.4.0",
+    "mdui": "^2.2.0",
+    "@mdui/icons": "^2.2.0"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.0.0",
+    "vite": "^5.0.0",
+    "vite-plugin-dts": "^3.7.0"
+  },
+  "peerDependencies": {
+    "vue": "^3.4.0",
+    "mdui": "^2.2.0"
+  }
+}
