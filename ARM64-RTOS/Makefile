@@ -32,6 +32,11 @@ OBJCOPY = $(CROSS_COMPILE)objcopy
 OBJDUMP = $(CROSS_COMPILE)objdump
 SIZE    = $(CROSS_COMPILE)size
 
+# Kconfig tools (uses kconfiglib - install with: pip install kconfiglib)
+MENUCONFIG  = menuconfig
+GUICONFIG   = guiconfig
+GENCONFIG   = scripts/genconfig.py
+
 # Project name
 PROJECT = gracemont-rtos
 
@@ -45,6 +50,11 @@ PROTO_DIR   = protocols
 DRIVER_DIR  = drivers
 INC_DIR     = include
 CONFIG_DIR  = config
+CONFIGS_DIR = configs
+
+# Configuration files
+DOTCONFIG   = .config
+AUTOCONF_H  = $(INC_DIR)/autoconf.h
 
 # Source files
 ASM_SOURCES = \
@@ -113,7 +123,7 @@ HEX     = $(BUILD_DIR)/$(PROJECT).hex
 DUMP    = $(BUILD_DIR)/$(PROJECT).dump
 
 # Default target
-all: $(BIN) $(HEX) size
+all: $(AUTOCONF_H) $(BIN) $(HEX) size
 
 # Create build directories
 $(BUILD_DIR):
@@ -171,6 +181,12 @@ size: $(ELF)
 clean:
 	@echo "  CLEAN"
 	@rm -rf $(BUILD_DIR)
+	@rm -f $(AUTOCONF_H)
+
+# Clean including config
+distclean: clean
+	@echo "  DISTCLEAN"
+	@rm -f $(DOTCONFIG) $(DOTCONFIG).old
 
 # Run with QEMU (aarch64)
 qemu: $(ELF)
@@ -206,7 +222,8 @@ compile_commands: clean
 # Dependencies
 -include $(OBJECTS:.o=.d)
 
-.PHONY: all clean dump size qemu debug compile_commands test
+.PHONY: all clean distclean dump size qemu debug compile_commands test \
+        menuconfig guiconfig defconfig savedefconfig oldconfig silentoldconfig help
 
 # Build with tests
 test: CFLAGS += -DBUILD_TESTS
@@ -229,3 +246,80 @@ qemu-test: $(BUILD_DIR)/$(PROJECT)-test.elf
 		-nographic \
 		-kernel $(BUILD_DIR)/$(PROJECT)-test.elf \
 		-serial mon:stdio
+
+# ============================================================================
+# Kconfig Configuration Targets
+# ============================================================================
+
+# Interactive menu-based configuration (ncurses)
+menuconfig:
+	@echo "Starting menuconfig..."
+	@$(MENUCONFIG) Kconfig
+
+# Interactive GUI configuration (Qt/Tk)
+guiconfig:
+	@echo "Starting guiconfig..."
+	@$(GUICONFIG) Kconfig
+
+# Load default configuration
+defconfig:
+	@echo "Loading default configuration..."
+	@cp $(CONFIGS_DIR)/defconfig $(DOTCONFIG)
+	@$(MAKE) silentoldconfig
+
+# Save current configuration as default
+savedefconfig:
+	@echo "Saving configuration to $(CONFIGS_DIR)/defconfig..."
+	@cp $(DOTCONFIG) $(CONFIGS_DIR)/defconfig
+
+# Update configuration (interactive)
+oldconfig:
+	@echo "Running oldconfig..."
+	@oldconfig Kconfig
+
+# Update configuration (non-interactive, use defaults)
+silentoldconfig: $(DOTCONFIG)
+	@echo "Generating $(AUTOCONF_H)..."
+	@python3 $(GENCONFIG) $(DOTCONFIG) $(AUTOCONF_H)
+
+# Generate autoconf.h from .config
+$(AUTOCONF_H): $(DOTCONFIG)
+	@echo "Generating $(AUTOCONF_H)..."
+	@python3 $(GENCONFIG) $(DOTCONFIG) $(AUTOCONF_H)
+
+# Create .config if it doesn't exist
+$(DOTCONFIG):
+	@if [ ! -f $(DOTCONFIG) ]; then \
+		echo "No .config found, loading defconfig..."; \
+		cp $(CONFIGS_DIR)/defconfig $(DOTCONFIG); \
+	fi
+
+# Help target
+help:
+	@echo ""
+	@echo "Gracemont ARM64 RTOS Build System"
+	@echo "=================================="
+	@echo ""
+	@echo "Build targets:"
+	@echo "  all             - Build the RTOS (default)"
+	@echo "  clean           - Remove build artifacts"
+	@echo "  test            - Build with unit tests"
+	@echo "  dump            - Generate disassembly"
+	@echo "  size            - Show memory usage"
+	@echo ""
+	@echo "Configuration targets:"
+	@echo "  menuconfig      - Interactive menu configuration (ncurses)"
+	@echo "  guiconfig       - Interactive GUI configuration"
+	@echo "  defconfig       - Load default configuration"
+	@echo "  savedefconfig   - Save current config as default"
+	@echo "  oldconfig       - Update config (interactive)"
+	@echo "  silentoldconfig - Update config (non-interactive)"
+	@echo ""
+	@echo "QEMU targets:"
+	@echo "  qemu            - Run RTOS in QEMU"
+	@echo "  qemu-test       - Run tests in QEMU"
+	@echo "  debug           - Start QEMU with GDB server"
+	@echo ""
+	@echo "Prerequisites:"
+	@echo "  pip install kconfiglib"
+	@echo ""

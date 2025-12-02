@@ -1,0 +1,22 @@
+# Build output
+build/
+
+# Kconfig generated files
+.config
+.config.old
+include/autoconf.h
+
+# Editor files
+*.swp
+*~
+.vscode/
+.idea/
+
+# Compiled objects
+*.o
+*.elf
+*.bin
+*.hex
+
+# IDE generated
+compile_commands.json

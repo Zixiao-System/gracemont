@@ -1,0 +1,40 @@
+#
+# Kernel Configuration
+#
+
+menu "Kernel Configuration"
+
+config KERNEL_PREEMPTION
+	bool "Enable Preemptive Scheduling"
+	default y
+	help
+	  Enable preemptive multitasking. When disabled, tasks must
+	  explicitly yield the CPU.
+
+config KERNEL_TIMESLICE
+	int "Time Slice (ticks)"
+	range 1 100
+	default 10
+	depends on KERNEL_PREEMPTION
+	help
+	  Time slice for round-robin scheduling among same-priority tasks.
+
+config KERNEL_STATS
+	bool "Enable Kernel Statistics"
+	default n
+	help
+	  Collect runtime statistics (CPU usage, context switches, etc.).
+
+config KERNEL_STACK_CHECK
+	bool "Enable Stack Overflow Detection"
+	default y
+	help
+	  Check for stack overflows at context switch time.
+
+config KERNEL_IDLE_SLEEP
+	bool "Enter Low-Power Mode When Idle"
+	default y
+	help
+	  Use WFI instruction in idle task to save power.
+
+endmenu

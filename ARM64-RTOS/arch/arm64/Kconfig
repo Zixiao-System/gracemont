@@ -1,0 +1,67 @@
+#
+# ARM64 Architecture Configuration
+#
+
+menu "ARM64 Architecture"
+
+config ARM64_CPU
+	string "Target CPU"
+	default "cortex-a53"
+	help
+	  Target ARM64 CPU type for optimization.
+	  Examples: cortex-a53, cortex-a57, cortex-a72
+
+menu "GIC (Generic Interrupt Controller)"
+
+config GICD_BASE
+	hex "GIC Distributor Base Address"
+	default 0x08000000
+	help
+	  Base address of the GIC Distributor.
+
+config GICC_BASE
+	hex "GIC CPU Interface Base Address"
+	default 0x08010000
+	help
+	  Base address of the GIC CPU Interface.
+
+config GIC_SPI_START
+	int "SPI Interrupt Start Number"
+	default 32
+	help
+	  Starting interrupt number for Shared Peripheral Interrupts.
+
+endmenu
+
+menu "MMU Configuration"
+
+config MMU_ENABLED
+	bool "Enable MMU"
+	default y
+	help
+	  Enable the Memory Management Unit.
+
+config MMU_PAGE_SIZE
+	int "Page Size (bytes)"
+	default 4096
+	depends on MMU_ENABLED
+	help
+	  Virtual memory page size.
+
+config DCACHE_ENABLED
+	bool "Enable Data Cache"
+	default y
+	depends on MMU_ENABLED
+	help
+	  Enable the data cache.
+
+config ICACHE_ENABLED
+	bool "Enable Instruction Cache"
+	default y
+	depends on MMU_ENABLED
+	help
+	  Enable the instruction cache.
+
+endmenu
+
+endmenu

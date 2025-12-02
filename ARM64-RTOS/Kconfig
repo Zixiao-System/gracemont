@@ -1,0 +1,145 @@
+#
+# Gracemont Industrial Control Framework - ARM64 RTOS
+# Copyright (C) 2024 Zixiao System <https://github.com/Zixiao-System>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
+#
+# Main Kconfig
+#
+
+mainmenu "Gracemont ARM64 RTOS Configuration"
+
+config GRACEMONT_RTOS
+	bool
+	default y
+
+menu "System Configuration"
+
+config CPU_FREQ_HZ
+	int "CPU Frequency (Hz)"
+	default 1000000000
+	help
+	  The CPU clock frequency in Hz.
+	  Default is 1 GHz (1000000000).
+
+config TICK_RATE_HZ
+	int "System Tick Rate (Hz)"
+	range 100 10000
+	default 1000
+	help
+	  System tick frequency in Hz.
+	  Higher values provide finer timing granularity but increase overhead.
+	  Default is 1000 Hz (1ms tick).
+
+config MAX_TASKS
+	int "Maximum Number of Tasks"
+	range 4 256
+	default 32
+	help
+	  Maximum number of concurrent tasks supported.
+
+config MAX_PRIORITY
+	int "Maximum Priority Levels"
+	range 4 256
+	default 16
+	help
+	  Number of priority levels (0 = highest priority).
+
+config TASK_STACK_SIZE
+	int "Default Task Stack Size (bytes)"
+	range 1024 65536
+	default 4096
+	help
+	  Default stack size for tasks in bytes.
+
+config IDLE_STACK_SIZE
+	int "Idle Task Stack Size (bytes)"
+	range 512 8192
+	default 1024
+	help
+	  Stack size for the idle task.
+
+endmenu
+
+menu "Memory Configuration"
+
+config HEAP_SIZE
+	int "Heap Size (bytes)"
+	range 65536 268435456
+	default 16777216
+	help
+	  Total heap memory size in bytes.
+	  Default is 16 MB.
+
+config DMA_POOL_SIZE
+	int "DMA Pool Size (bytes)"
+	range 65536 67108864
+	default 4194304
+	help
+	  DMA-capable memory pool size for zero-copy operations.
+	  Default is 4 MB.
+
+config ZBUF_POOL_SIZE
+	int "Zero-Copy Buffer Pool Size (bytes)"
+	range 65536 16777216
+	default 2097152
+	help
+	  Memory pool for zero-copy network buffers.
+	  Default is 2 MB.
+
+config ZBUF_COUNT
+	int "Number of Zero-Copy Buffers"
+	range 64 8192
+	default 1024
+	help
+	  Number of pre-allocated zero-copy buffers.
+
+config ZBUF_SIZE
+	int "Zero-Copy Buffer Size (bytes)"
+	range 256 65536
+	default 2048
+	help
+	  Size of each zero-copy buffer (should accommodate MTU + headers).
+
+config ZBUF_HEADROOM
+	int "Zero-Copy Buffer Headroom (bytes)"
+	range 32 512
+	default 128
+	help
+	  Reserved space at the start of each buffer for protocol headers.
+
+endmenu
+
+source "kernel/Kconfig"
+source "drivers/Kconfig"
+source "net/Kconfig"
+source "protocols/Kconfig"
+source "arch/arm64/Kconfig"
+
+menu "Debug Configuration"
+
+config DEBUG_UART
+	bool "Enable Debug UART Output"
+	default y
+	help
+	  Enable debug messages via UART.
+
+config DEBUG_LEVEL
+	int "Debug Level"
+	range 0 3
+	default 2
+	depends on DEBUG_UART
+	help
+	  Debug verbosity level:
+	    0 = None
+	    1 = Errors only
+	    2 = Warnings and errors
+	    3 = Info, warnings, and errors
+
+config BUILD_TESTS
+	bool "Build Unit Tests"
+	default n
+	help
+	  Include unit tests in the build.
+
+endmenu

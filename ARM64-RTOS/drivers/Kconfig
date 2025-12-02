@@ -1,0 +1,110 @@
+#
+# Driver Configuration
+#
+
+menu "Device Drivers"
+
+menu "UART Configuration"
+
+config UART_ENABLED
+	bool "Enable UART Driver"
+	default y
+	help
+	  Enable the PL011 UART driver.
+
+config UART_BASE
+	hex "UART Base Address"
+	default 0x09000000
+	depends on UART_ENABLED
+	help
+	  Base address of the UART peripheral.
+
+config UART_IRQ
+	int "UART IRQ Number"
+	default 33
+	depends on UART_ENABLED
+	help
+	  IRQ number for UART interrupts.
+
+config UART_COUNT
+	int "Number of UART Ports"
+	range 1 4
+	default 1
+	depends on UART_ENABLED
+	help
+	  Number of UART ports to enable.
+
+config UART_CLOCK
+	int "UART Clock Frequency (Hz)"
+	default 24000000
+	depends on UART_ENABLED
+	help
+	  UART peripheral clock frequency in Hz.
+
+config UART_BAUD_DEFAULT
+	int "Default Baud Rate"
+	default 115200
+	depends on UART_ENABLED
+	help
+	  Default UART baud rate.
+
+endmenu
+
+menu "Ethernet Configuration"
+
+config ETH_ENABLED
+	bool "Enable Ethernet Driver"
+	default y
+	help
+	  Enable the Ethernet MAC driver.
+
+config ETH_BASE
+	hex "Ethernet Base Address"
+	default 0x0A000000
+	depends on ETH_ENABLED
+	help
+	  Base address of the Ethernet MAC.
+
+config ETH_IRQ
+	int "Ethernet IRQ Number"
+	default 47
+	depends on ETH_ENABLED
+	help
+	  IRQ number for Ethernet interrupts.
+
+config ETH_RX_DESCRIPTORS
+	int "RX Descriptor Count"
+	range 16 1024
+	default 256
+	depends on ETH_ENABLED
+	help
+	  Number of receive DMA descriptors.
+
+config ETH_TX_DESCRIPTORS
+	int "TX Descriptor Count"
+	range 16 1024
+	default 256
+	depends on ETH_ENABLED
+	help
+	  Number of transmit DMA descriptors.
+
+endmenu
+
+menu "Timer Configuration"
+
+config TIMER_ENABLED
+	bool "Enable Generic Timer Driver"
+	default y
+	help
+	  Enable the ARM Generic Timer driver.
+
+config TIMER_IRQ
+	int "Timer IRQ Number"
+	default 27
+	depends on TIMER_ENABLED
+	help
+	  IRQ number for the timer (typically PPI 27 for non-secure EL1).
+
+endmenu
+
+endmenu
