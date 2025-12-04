@@ -95,6 +95,16 @@ make test
 make qemu
 ```
 
+```bash
+# Build X86_64 RTOS
+cd X86_64-RTOS
+make menuconfig  # Configure build options (optional)
+make
+
+# Run in QEMU
+make qemu
+```
+
 ### Quick Start
 
 1. Clone the repository
@@ -133,7 +143,7 @@ This project is licensed under the GNU General Public License v3.0 - see the [LI
 ## Roadmap
 
 - [ ] Complete ARM64 RTOS kernel
-- [ ] Implement x86_64 RTOS port
+- [x] Implement x86_64 RTOS port
 - [ ] Soft PLC runtime with IEC 61131-3 support
 - [ ] DCS controller framework
 - [ ] Web-based HMI

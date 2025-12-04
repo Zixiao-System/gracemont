@@ -1,0 +1,93 @@
+#
+# Network Stack Configuration
+#
+
+menu "Network Stack"
+
+config NET_ENABLED
+	bool "Enable Network Stack"
+	default y
+	select ETH_ENABLED
+	help
+	  Enable the TCP/IP network stack.
+
+config NET_RX_RING_SIZE
+	int "RX Ring Buffer Size"
+	range 32 4096
+	default 256
+	depends on NET_ENABLED
+	help
+	  Size of the receive ring buffer.
+
+config NET_TX_RING_SIZE
+	int "TX Ring Buffer Size"
+	range 32 4096
+	default 256
+	depends on NET_ENABLED
+	help
+	  Size of the transmit ring buffer.
+
+config NET_MAX_SOCKETS
+	int "Maximum Number of Sockets"
+	range 8 256
+	default 64
+	depends on NET_ENABLED
+	help
+	  Maximum number of concurrent network sockets.
+
+menu "TCP Configuration"
+
+config TCP_ENABLED
+	bool "Enable TCP Protocol"
+	default y
+	depends on NET_ENABLED
+	help
+	  Enable TCP protocol support.
+
+config TCP_MSS
+	int "TCP Maximum Segment Size"
+	range 536 9000
+	default 1460
+	depends on TCP_ENABLED
+	help
+	  TCP Maximum Segment Size (MSS).
+	  Default 1460 for standard Ethernet (1500 - 40 bytes headers).
+
+config TCP_WINDOW_SIZE
+	int "TCP Window Size"
+	range 1024 1073741824
+	default 65535
+	depends on TCP_ENABLED
+	help
+	  TCP receive window size in bytes.
+
+config TCP_MAX_CONNECTIONS
+	int "Maximum TCP Connections"
+	range 8 1024
+	default 64
+	depends on TCP_ENABLED
+	help
+	  Maximum number of concurrent TCP connections.
+
+config TCP_RETRIES
+	int "TCP Maximum Retries"
+	range 1 15
+	default 5
+	depends on TCP_ENABLED
+	help
+	  Maximum number of TCP retransmission attempts.
+
+endmenu
+
+menu "UDP Configuration"
+
+config UDP_ENABLED
+	bool "Enable UDP Protocol"
+	default y
+	depends on NET_ENABLED
+	help
+	  Enable UDP protocol support.
+
+endmenu
+
+endmenu

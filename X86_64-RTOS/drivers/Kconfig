@@ -1,0 +1,89 @@
+#
+# Driver Configuration
+#
+
+menu "Device Drivers"
+
+# ============================================================================
+# Serial Port
+# ============================================================================
+
+menu "Serial Port"
+
+config DRIVER_UART_16550
+    bool "16550 UART driver"
+    default y
+    help
+      Driver for 16550-compatible UART.
+
+config UART_COM1
+    bool "Enable COM1 (0x3F8)"
+    depends on DRIVER_UART_16550
+    default y
+
+config UART_COM2
+    bool "Enable COM2 (0x2F8)"
+    depends on DRIVER_UART_16550
+    default n
+
+config UART_DEFAULT_BAUD
+    int "Default baud rate"
+    depends on DRIVER_UART_16550
+    default 115200
+
+endmenu
+
+# ============================================================================
+# Timer
+# ============================================================================
+
+menu "Timer"
+
+config DRIVER_PIT
+    bool "PIT (8254) driver"
+    default y
+    help
+      Programmable Interval Timer driver.
+
+config DRIVER_APIC_TIMER
+    bool "APIC Timer driver"
+    depends on X86_64_APIC
+    default y
+    help
+      Local APIC timer driver.
+
+config DRIVER_HPET
+    bool "HPET driver"
+    default n
+    help
+      High Precision Event Timer driver.
+
+endmenu
+
+# ============================================================================
+# Network
+# ============================================================================
+
+menu "Network Interface"
+
+config DRIVER_VIRTIO_NET
+    bool "Virtio network driver"
+    default y
+    help
+      Virtio network driver for QEMU/KVM.
+
+config DRIVER_E1000
+    bool "Intel E1000 driver"
+    default n
+    help
+      Intel E1000/E1000E network driver.
+
+config DRIVER_RTL8139
+    bool "Realtek RTL8139 driver"
+    default n
+    help
+      Realtek RTL8139 network driver.
+
+endmenu
+
+endmenu

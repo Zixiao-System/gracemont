@@ -1,0 +1,39 @@
+#
+# Kernel Configuration
+#
+
+menu "Kernel Configuration"
+
+config KERNEL_PREEMPTION
+    bool "Enable kernel preemption"
+    default y
+    help
+      Allow preemption of kernel code by higher priority tasks.
+
+config KERNEL_TIMESLICE
+    int "Default time slice (ticks)"
+    range 1 100
+    default 10
+    help
+      Default time slice for round-robin scheduling among
+      tasks of the same priority.
+
+config KERNEL_IDLE_SLEEP
+    bool "Sleep in idle task"
+    default y
+    help
+      Use HLT instruction in idle task to reduce power consumption.
+
+config KERNEL_STACK_CHECK
+    bool "Enable stack overflow checking"
+    default y
+    help
+      Check for stack overflow at task switch.
+
+config KERNEL_ASSERT
+    bool "Enable kernel assertions"
+    default y
+    help
+      Enable runtime assertions for debugging.
+
+endmenu

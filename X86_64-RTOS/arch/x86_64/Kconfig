@@ -1,0 +1,199 @@
+#
+# X86_64 Architecture Configuration
+#
+
+menu "X86_64 Architecture"
+
+# ============================================================================
+# CPU Configuration
+# ============================================================================
+
+menu "CPU Configuration"
+
+config X86_64_CPU
+    string "Target CPU model"
+    default "qemu64"
+    help
+      Target CPU model for optimization.
+      Examples: qemu64, core2, nehalem, skylake
+
+config X86_64_FEATURES
+    bool "Detect CPU features at runtime"
+    default y
+    help
+      Use CPUID to detect available CPU features.
+
+config X86_64_SSE
+    bool "Enable SSE support"
+    default n
+    help
+      Enable SSE instructions in kernel.
+      Note: SSE context must be saved/restored on task switch.
+
+endmenu
+
+# ============================================================================
+# Interrupt Controller
+# ============================================================================
+
+menu "Interrupt Controller"
+
+choice
+    prompt "Interrupt Controller"
+    default X86_64_APIC
+
+config X86_64_APIC
+    bool "APIC (Advanced PIC)"
+    help
+      Use Advanced Programmable Interrupt Controller.
+      Required for SMP and recommended for all modern systems.
+
+config X86_64_PIC
+    bool "PIC (8259) Legacy"
+    help
+      Use legacy 8259 Programmable Interrupt Controller.
+      Only for very old systems or debugging.
+
+endchoice
+
+config X86_64_APIC_BASE
+    hex "Local APIC base address"
+    depends on X86_64_APIC
+    default 0xFEE00000
+    help
+      Base address of the Local APIC registers.
+
+config X86_64_IOAPIC_BASE
+    hex "I/O APIC base address"
+    depends on X86_64_APIC
+    default 0xFEC00000
+    help
+      Base address of the I/O APIC registers.
+
+config X86_64_MAX_IRQS
+    int "Maximum number of IRQs"
+    default 256
+    help
+      Maximum number of interrupt vectors supported.
+
+endmenu
+
+# ============================================================================
+# Timer Configuration
+# ============================================================================
+
+menu "Timer Configuration"
+
+choice
+    prompt "System Timer"
+    default X86_64_APIC_TIMER
+
+config X86_64_APIC_TIMER
+    bool "APIC Timer"
+    depends on X86_64_APIC
+    help
+      Use Local APIC timer for system tick.
+      Recommended for modern systems.
+
+config X86_64_HPET
+    bool "HPET"
+    help
+      Use High Precision Event Timer.
+      Provides higher precision but may have higher latency.
+
+config X86_64_PIT
+    bool "PIT (8254)"
+    help
+      Use legacy Programmable Interval Timer.
+      Always available, used as fallback.
+
+endchoice
+
+config X86_64_TSC
+    bool "Use TSC for high-resolution timing"
+    default y
+    help
+      Use Time Stamp Counter for nanosecond-precision timing.
+
+endmenu
+
+# ============================================================================
+# Memory Management
+# ============================================================================
+
+menu "Memory Management"
+
+config X86_64_PAGING
+    bool "Enable paging"
+    default y
+    help
+      Enable 4-level paging for virtual memory.
+
+config X86_64_PAGE_SIZE
+    int "Page size (bytes)"
+    default 4096
+    help
+      Page size for memory mapping.
+
+config X86_64_HUGE_PAGES
+    bool "Use 2MB huge pages"
+    default y
+    depends on X86_64_PAGING
+    help
+      Use 2MB pages for kernel memory mapping.
+      Reduces TLB pressure but increases memory granularity.
+
+config X86_64_KERNEL_BASE
+    hex "Kernel virtual base address"
+    default 0xFFFF800000000000
+    help
+      Base virtual address for kernel mapping.
+
+config X86_64_PHYS_BASE
+    hex "Kernel physical base address"
+    default 0x100000
+    help
+      Physical address where kernel is loaded (typically 1MB).
+
+endmenu
+
+# ============================================================================
+# ACPI Configuration
+# ============================================================================
+
+menu "ACPI Configuration"
+
+config X86_64_ACPI
+    bool "ACPI Support"
+    default y
+    help
+      Parse ACPI tables for hardware discovery.
+
+config X86_64_ACPI_DEBUG
+    bool "ACPI debug output"
+    depends on X86_64_ACPI
+    default n
+    help
+      Print ACPI table parsing debug information.
+
+endmenu
+
+# ============================================================================
+# SMP Configuration (Future)
+# ============================================================================
+
+config X86_64_SMP
+    bool "SMP Support (Experimental)"
+    default n
+    help
+      Enable Symmetric Multi-Processing support.
+      Currently experimental.
+
+config X86_64_MAX_CPUS
+    int "Maximum number of CPUs"
+    depends on X86_64_SMP
+    default 4
+    help
+      Maximum number of CPUs supported.
+
+endmenu

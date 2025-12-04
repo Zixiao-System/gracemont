@@ -1,0 +1,208 @@
+#
+# Gracemont X86_64 RTOS Configuration
+#
+
+mainmenu "Gracemont X86_64 RTOS Configuration"
+
+config GRACEMONT_RTOS
+    bool
+    default y
+
+# ============================================================================
+# Boot Configuration
+# ============================================================================
+
+menu "Boot Configuration"
+
+choice
+    prompt "Boot Method"
+    default BOOT_MULTIBOOT2
+
+config BOOT_MULTIBOOT2
+    bool "Multiboot2 (GRUB/QEMU)"
+    help
+      Use Multiboot2 specification for booting.
+      Compatible with GRUB2 and QEMU -kernel option.
+
+config BOOT_UEFI
+    bool "UEFI"
+    help
+      Boot as a UEFI application.
+      Requires FAT filesystem image.
+
+endchoice
+
+config BOOT_CMDLINE
+    string "Default kernel command line"
+    default ""
+    help
+      Default command line arguments passed to the kernel.
+
+endmenu
+
+# ============================================================================
+# System Configuration
+# ============================================================================
+
+menu "System Configuration"
+
+config CPU_FREQ_HZ
+    int "CPU frequency (Hz)"
+    default 1000000000
+    help
+      Target CPU frequency in Hz. Used for timing calculations.
+
+config TICK_RATE_HZ
+    int "System tick rate (Hz)"
+    range 100 10000
+    default 1000
+    help
+      Number of system ticks per second.
+      Higher values provide better timing resolution but more overhead.
+
+config MAX_TASKS
+    int "Maximum number of tasks"
+    range 4 256
+    default 32
+    help
+      Maximum number of concurrent tasks supported.
+
+config MAX_PRIORITY
+    int "Number of priority levels"
+    range 4 256
+    default 16
+    help
+      Number of task priority levels (0 = highest priority).
+
+config TASK_STACK_SIZE
+    int "Default task stack size (bytes)"
+    range 1024 65536
+    default 4096
+    help
+      Default stack size allocated for each task.
+
+endmenu
+
+# ============================================================================
+# Memory Configuration
+# ============================================================================
+
+menu "Memory Configuration"
+
+config HEAP_SIZE
+    int "Heap size (bytes)"
+    default 16777216
+    help
+      Size of the kernel heap in bytes (default: 16MB).
+
+config DMA_POOL_SIZE
+    int "DMA pool size (bytes)"
+    default 4194304
+    help
+      Size of the DMA-safe memory pool in bytes (default: 4MB).
+
+config ZBUF_POOL_SIZE
+    int "Zero-copy buffer pool size (bytes)"
+    default 2097152
+    help
+      Size of the zero-copy network buffer pool (default: 2MB).
+
+config ZBUF_COUNT
+    int "Number of zero-copy buffers"
+    range 64 8192
+    default 1024
+    help
+      Number of pre-allocated zero-copy buffers.
+
+config ZBUF_SIZE
+    int "Zero-copy buffer size (bytes)"
+    range 256 65536
+    default 2048
+    help
+      Size of each zero-copy buffer (should be >= MTU + headers).
+
+config ZBUF_HEADROOM
+    int "Zero-copy buffer headroom (bytes)"
+    range 64 512
+    default 128
+    help
+      Reserved space at the beginning of each buffer for headers.
+
+endmenu
+
+# ============================================================================
+# Kernel Configuration
+# ============================================================================
+
+source "kernel/Kconfig"
+
+# ============================================================================
+# X86_64 Architecture Configuration
+# ============================================================================
+
+source "arch/x86_64/Kconfig"
+
+# ============================================================================
+# Driver Configuration
+# ============================================================================
+
+source "drivers/Kconfig"
+
+# ============================================================================
+# Network Configuration
+# ============================================================================
+
+source "net/Kconfig"
+
+# ============================================================================
+# Industrial Protocol Configuration
+# ============================================================================
+
+source "protocols/Kconfig"
+
+# ============================================================================
+# Debug Configuration
+# ============================================================================
+
+menu "Debug Configuration"
+
+config DEBUG_LEVEL
+    int "Debug output level"
+    range 0 4
+    default 2
+    help
+      0 = None, 1 = Error, 2 = Warning, 3 = Info, 4 = Debug
+
+config DEBUG_SERIAL
+    bool "Enable serial debug output"
+    default y
+    help
+      Output debug messages to serial port.
+
+config DEBUG_SERIAL_PORT
+    hex "Serial port base address"
+    depends on DEBUG_SERIAL
+    default 0x3F8
+    help
+      Serial port base address (0x3F8 = COM1, 0x2F8 = COM2).
+
+config DEBUG_SERIAL_BAUD
+    int "Serial port baud rate"
+    depends on DEBUG_SERIAL
+    default 115200
+    help
+      Serial port baud rate.
+
+config KERNEL_STATS
+    bool "Enable kernel statistics"
+    default n
+    help
+      Track and report kernel performance statistics.
+
+config STACK_CANARY
+    bool "Enable stack canary protection"
+    default y
+    help
+      Add stack canaries to detect stack buffer overflows.
+
+endmenu
